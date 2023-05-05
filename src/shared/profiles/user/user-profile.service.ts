@@ -10,10 +10,14 @@ export class UserProfileService extends AutomapperProfile {
     super(mapper);
   }
 
-  override get profile(){
-    return (mapper) =>{
-      createMap(mapper, CreateUserDto, User, forMember((dest) => dest.userId, ignore()))
-    }
+  override get profile() {
+    return (mapper) => {
+      createMap(
+        mapper,
+        CreateUserDto,
+        User,
+        forMember((dest) => dest.userId, ignore()),
+      );
+    };
   }
-
 }
