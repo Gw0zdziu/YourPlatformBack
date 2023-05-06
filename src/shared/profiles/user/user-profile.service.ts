@@ -3,6 +3,7 @@ import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { createMap, forMember, ignore, Mapper } from '@automapper/core';
 import { CreateUserDto } from '../../../dtos/User/create-user.dto';
 import { User } from '../../../entities/User/user.entity';
+import { UpdateUserDto } from '../../../dtos/User/update-user.dto';
 
 @Injectable()
 export class UserProfileService extends AutomapperProfile {
@@ -17,6 +18,12 @@ export class UserProfileService extends AutomapperProfile {
         CreateUserDto,
         User,
         forMember((dest) => dest.userId, ignore()),
+      );
+      createMap(
+        mapper,
+        UpdateUserDto,
+        User,
+        forMember((dest: User) => dest.password, ignore()),
       );
     };
   }
