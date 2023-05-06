@@ -1,22 +1,21 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { AutoMap } from "@automapper/classes";
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { AutoMap } from '@automapper/classes';
 
 @Entity()
 export class User {
-
   @AutoMap()
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('text')
   userId: string;
 
   @AutoMap()
-  @Column()
+  @Column('text')
   userEmail: string;
 
   @AutoMap()
-  @Column()
+  @Column('text')
   userName: string;
 
   @AutoMap()
-  @Column()
+  @Column('text')
   password: string;
 }

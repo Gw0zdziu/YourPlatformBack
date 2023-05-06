@@ -15,10 +15,10 @@ import { UserController } from './controllers/user/user.controller';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 5432,
+      port: 5433,
       username: 'postgres',
       password: 'postgres',
-      database: 'YourPlatform',
+      database: 'postgres',
       entities: [User],
       synchronize: true,
       autoLoadEntities: true,

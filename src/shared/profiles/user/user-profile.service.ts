@@ -17,7 +17,7 @@ export class UserProfileService extends AutomapperProfile {
         mapper,
         CreateUserDto,
         User,
-        forMember((dest) => dest.userId, ignore()),
+        forMember((dest: User) => dest.userId, ignore()),
       );
       createMap(
         mapper,
