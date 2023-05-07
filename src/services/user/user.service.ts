@@ -12,7 +12,7 @@ import { UpdateUserDto } from '../../dtos/User/update-user.dto';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { v4 as uuid } from 'uuid';
-
+import { UserDto } from '../../dtos/User/user.dto';
 
 @Injectable()
 export class UserService {
@@ -21,8 +21,36 @@ export class UserService {
     @InjectMapper() private readonly classMapper: Mapper,
     private hashSvc: HashService,
   ) {}
+
+  async getUser(userId: string): Promise<UserDto> {
+    const user = await this.entities
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .where('user.userId = :userId', { userId })
+      .getOne();
+    if (!user) {
+      throw new NotFoundException('Nie znaleziono użytkownika');
+    } else {
+      const userMap = this.classMapper.map(user, User, UserDto);
+      return userMap;
+    }
+  }
+
+  async getUsers(): Promise<UserDto[]> {
+    const users = await this.entities
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .getMany();
+    if (!users) {
+      throw new NotFoundException('Nie znaleziono użytkowników');
+    } else {
+      const usersMap = this.classMapper.mapArray(users, User, UserDto);
+      return usersMap;
+    }
+  }
+
   async createUser(newUser: CreateUserDto) {
-    const {  userEmail, userName } = newUser;
+    const { userEmail, userName } = newUser;
     const isUserExist = await this.isUserExist(userName, userEmail);
     if (isUserExist) {
       throw new BadRequestException('Użytkownik o takich danych już istnieje');

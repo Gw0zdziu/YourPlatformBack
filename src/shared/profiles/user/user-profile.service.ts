@@ -4,6 +4,7 @@ import { createMap, forMember, ignore, Mapper } from '@automapper/core';
 import { CreateUserDto } from '../../../dtos/User/create-user.dto';
 import { User } from '../../../entities/User/user.entity';
 import { UpdateUserDto } from '../../../dtos/User/update-user.dto';
+import { UserDto } from '../../../dtos/User/user.dto';
 
 @Injectable()
 export class UserProfileService extends AutomapperProfile {
@@ -25,6 +26,7 @@ export class UserProfileService extends AutomapperProfile {
         User,
         forMember((dest: User) => dest.password, ignore()),
       );
+      createMap(mapper, User, UserDto);
     };
   }
 }

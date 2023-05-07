@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   Param,
   Post,
@@ -10,10 +11,21 @@ import {
 import { CreateUserDto } from '../../dtos/User/create-user.dto';
 import { UserService } from '../../services/user/user.service';
 import { UpdateUserDto } from '../../dtos/User/update-user.dto';
+import { UserDto } from '../../dtos/User/user.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private userSvc: UserService) {}
+
+  @Get(':userId')
+  async getUser(@Param('userId') userId: string): Promise<UserDto> {
+    return await this.userSvc.getUser(userId);
+  }
+
+  @Get()
+  async getUsers(): Promise<UserDto[]> {
+    return await this.userSvc.getUsers();
+  }
 
   @Post()
   @HttpCode(204)

@@ -18,7 +18,7 @@ import { UserController } from './controllers/user/user.controller';
       port: 5433,
       username: 'postgres',
       password: 'postgres',
-      database: 'postgres',
+      database: 'YourPlatform',
       entities: [User],
       synchronize: true,
       autoLoadEntities: true,
