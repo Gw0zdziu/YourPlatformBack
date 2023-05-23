@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, IsNull, PrimaryColumn } from 'typeorm';
 import { AutoMap } from '@automapper/classes';
 
 @Entity()
@@ -13,9 +13,12 @@ export class User {
 
   @AutoMap()
   @Column('text')
-  userName: string;
+  username: string;
 
   @AutoMap()
   @Column('text')
   password: string;
+
+  @Column('text', { nullable: true })
+  refreshToken: string;
 }

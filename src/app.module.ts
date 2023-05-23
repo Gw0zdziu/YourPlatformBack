@@ -7,8 +7,12 @@ import { UserService } from './services/user/user.service';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { UserProfileService } from "./shared/profiles/user/user-profile.service";
-import { HashService } from './shared/hash/hash/hash.service';
 import { UserController } from './controllers/user/user.controller';
+import { AuthModule } from './modules/auth/auth.module';
+import { AuthProfileService } from './shared/profiles/auth/auth-profile.service';
+import { SharedModule } from './shared/shared.module';
+import { ConfigModule } from '@nestjs/config';
+
 
 @Module({
   imports: [
@@ -26,8 +30,11 @@ import { UserController } from './controllers/user/user.controller';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    ConfigModule.forRoot(),
+    SharedModule,
+    AuthModule,
   ],
   controllers: [AppController, UserController],
-  providers: [AppService, UserService, UserProfileService, HashService],
+  providers: [AppService, UserService, UserProfileService, AuthProfileService,],
 })
 export class AppModule {}

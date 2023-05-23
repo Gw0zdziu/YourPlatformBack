@@ -7,7 +7,7 @@ import { CreateUserDto } from '../../dtos/User/create-user.dto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { User } from '../../entities/User/user.entity';
-import { HashService } from '../../shared/hash/hash/hash.service';
+import { HashService } from 'src/shared/hash/hash.service';
 import { UpdateUserDto } from '../../dtos/User/update-user.dto';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
@@ -50,8 +50,8 @@ export class UserService {
   }
 
   async createUser(newUser: CreateUserDto) {
-    const { userEmail, userName } = newUser;
-    const isUserExist = await this.isUserExist(userName, userEmail);
+    const { userEmail, username } = newUser;
+    const isUserExist = await this.isUserExist(username, userEmail);
     if (isUserExist) {
       throw new BadRequestException('Użytkownik o takich danych już istnieje');
     }
@@ -73,7 +73,6 @@ export class UserService {
       throw new NotFoundException('Nie znaleziono takie użytkownika');
     } else {
       const user = this.classMapper.map(updateDataUser, UpdateUserDto, User);
-      console.log(user);
       await this.entities
         .createQueryBuilder()
         .update(User)
@@ -81,6 +80,20 @@ export class UserService {
         .where('userId = :userId', { userId })
         .execute();
     }
+  }
+
+  async updateRefreshToken(userId: string, refreshToken: string) {
+    const isUserIdExist = await this.isUserIdExist(userId);
+    if (!isUserIdExist) {
+      throw new NotFoundException('Nie znaleziono takie użytkownika');
+    }
+    const hashedRefreshToken = await this.hashSvc.hashPassword(refreshToken);
+    await this.entities
+      .createQueryBuilder()
+      .update(User)
+      .set(hashedRefreshToken)
+      .where('userId = :userId', { userId })
+      .execute();
   }
 
   async deleteUser(userId: string): Promise<void> {
@@ -105,12 +118,12 @@ export class UserService {
       .getExists();
     return isUserIdExist;
   }
-  private async isUserExist(userName: string, userEmail: string) {
+  async isUserExist(username: string, userEmail: string) {
     const isUserExist = await this.entities
       .getRepository(User)
       .createQueryBuilder('user')
       .where('user.userEmail = :userEmail', { userEmail })
-      .orWhere('user.userName = :userName', { userName })
+      .orWhere('user.username = :username', { username })
       .getExists();
     return isUserExist;
   }

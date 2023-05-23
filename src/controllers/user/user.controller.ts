@@ -8,10 +8,10 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { CreateUserDto } from '../../dtos/User/create-user.dto';
-import { UserService } from '../../services/user/user.service';
-import { UpdateUserDto } from '../../dtos/User/update-user.dto';
-import { UserDto } from '../../dtos/User/user.dto';
+import { CreateUserDto } from 'src/dtos/User/create-user.dto';
+import { UserService } from 'src/services/user/user.service';
+import { UpdateUserDto } from 'src/dtos/User/update-user.dto';
+import { UserDto } from 'src/dtos/User/user.dto';
 
 @Controller('user')
 export class UserController {
@@ -27,7 +27,7 @@ export class UserController {
     return await this.userSvc.getUsers();
   }
 
-  @Post()
+  @Post('register')
   @HttpCode(204)
   async createUser(@Body() newUser: CreateUserDto): Promise<void> {
     await this.userSvc.createUser(newUser);
