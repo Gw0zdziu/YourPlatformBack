@@ -65,6 +65,14 @@ export class UserService {
       .values(user)
       .execute();
   }
+  async updateToken(userId: string, refreshToken?: string){
+    return await this.entities
+      .createQueryBuilder()
+      .update(User)
+      .set({ refreshToken })
+      .where('userId = :userId', { userId })
+      .execute();
+  }
 
   async updateUser(updateDataUser: UpdateUserDto) {
     const { userId, userEmail, userName } = updateDataUser;
@@ -82,20 +90,6 @@ export class UserService {
     }
   }
 
-  async updateRefreshToken(userId: string, refreshToken: string) {
-    const isUserIdExist = await this.isUserIdExist(userId);
-    if (!isUserIdExist) {
-      throw new NotFoundException('Nie znaleziono takie użytkownika');
-    }
-    const hashedRefreshToken = await this.hashSvc.hashPassword(refreshToken);
-    await this.entities
-      .createQueryBuilder()
-      .update(User)
-      .set(hashedRefreshToken)
-      .where('userId = :userId', { userId })
-      .execute();
-  }
-
   async deleteUser(userId: string): Promise<void> {
     const isUserIdExist = await this.isUserIdExist(userId);
     if (!isUserIdExist) {
@@ -110,7 +104,7 @@ export class UserService {
     }
   }
 
-  private async isUserIdExist(userId: string): Promise<boolean> {
+  async isUserIdExist(userId: string): Promise<boolean> {
     const isUserIdExist = await this.entities
       .getRepository(User)
       .createQueryBuilder('user')

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -44,8 +45,8 @@ export class AuthService {
       .into(User)
       .values(user)
       .execute();
-    const tokens = await this.getTokens(user.userId, username);
-    await this.userSvc.updateRefreshToken(user.userId, tokens.refreshToken);
+    const tokens = await this.getTokens(user.userId, username, user.userEmail);
+    await this.updateRefreshToken(user.userId, tokens.refreshToken);
     return tokens;
   }
 
@@ -62,22 +63,32 @@ export class AuthService {
     if (!(await this.hashSvc.comparePassword(user?.password, password))) {
       throw new UnauthorizedException('Brak dostępu');
     }
-    const tokens = await this.getTokens(user.userId, user.username);
-    await this.userSvc.updateRefreshToken(user.userId, tokens.refreshToken);
+    const tokens = await this.getTokens(
+      user.userId,
+      user.username,
+      user.userEmail,
+    );
+    await this.updateRefreshToken(user.userId, tokens.refreshToken);
     return tokens;
   }
 
-  async logout(userId: string){
-    const refreshToken = null;
-    return this.userSvc.updateRefreshToken(userId, refreshToken);
+  async updateRefreshToken(userId: string, refreshToken: string) {
+    const hashedRefreshToken = await this.hashSvc.hashPassword(refreshToken);
+    await this.userSvc.updateToken(userId, hashedRefreshToken);
   }
 
-  async getTokens(userId: string, username) {
+  async logout(userId: string) {
+    const refreshToken = null;
+    return this.userSvc.updateToken(userId, refreshToken);
+  }
+
+  async getTokens(userId: string, username: string, userEmail: string) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtSvc.signAsync(
         {
           userId,
           username,
+          userEmail,
         },
         {
           secret: this.confSvc.get<string>('JWT_ACCESS_SECRET'),
@@ -88,6 +99,7 @@ export class AuthService {
         {
           userId,
           username,
+          userEmail,
         },
         {
           secret: this.confSvc.get<string>('JWT_REFRESH_SECRET'),
@@ -100,5 +112,30 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async refreshTokens(userId: string, refreshToken: string) {
+    const user = await this.entities
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .where('user.userId = :userId', { userId })
+      .getOne();
+    if (!user || !user.refreshToken) {
+      throw new ForbiddenException('Brak dostępu');
+    }
+    const refreshTokenMatch = await this.hashSvc.comparePassword(
+      user.refreshToken,
+      refreshToken,
+    );
+    if (!refreshTokenMatch) {
+      throw new ForbiddenException('Brak dostępu');
+    }
+    const tokens = await this.getTokens(
+      user.userId,
+      user.username,
+      user.userEmail,
+    );
+    await this.updateRefreshToken(user.userId, tokens.refreshToken);
+    return tokens;
   }
 }

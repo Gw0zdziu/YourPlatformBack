@@ -12,6 +12,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AuthProfileService } from './shared/profiles/auth/auth-profile.service';
 import { SharedModule } from './shared/shared.module';
 import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 
 @Module({
@@ -30,11 +31,10 @@ import { ConfigModule } from '@nestjs/config';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
-    ConfigModule.forRoot(),
     SharedModule,
     AuthModule,
   ],
   controllers: [AppController, UserController],
-  providers: [AppService, UserService, UserProfileService, AuthProfileService,],
+  providers: [AppService, UserService, UserProfileService, AuthProfileService],
 })
 export class AppModule {}
