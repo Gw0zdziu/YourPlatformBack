@@ -1,6 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { AutoMap } from '@automapper/classes';
-import { Unique } from 'typeorm';
 
 export class UpdateUserDto {
   userId: string;

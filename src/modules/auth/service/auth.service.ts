@@ -11,12 +11,12 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { HashService } from 'src/shared/hash/hash.service';
 import { SignInDto } from '../dtos/sign-in.dto';
-import { User } from 'src/entities/User/user.entity';
+import { User } from 'src/modules/user/entity/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { CreateUserDto } from 'src/dtos/User/create-user.dto';
+import { CreateUserDto } from 'src/modules/user/dtos/create-user.dto';
 import { v4 as uuid } from 'uuid';
-import { UserService } from 'src/services/user/user.service';
+import { UserService } from 'src/modules/user/service/user.service';
 import { use } from 'passport';
 
 @Injectable()

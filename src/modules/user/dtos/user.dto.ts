@@ -5,5 +5,5 @@ export class UserDto {
   userEmail: string;
 
   @AutoMap()
-  userName: string;
+  username: string;
 }

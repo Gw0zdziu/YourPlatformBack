@@ -3,16 +3,16 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto } from '../../dtos/User/create-user.dto';
+import { CreateUserDto } from 'src/modules/user/dtos/create-user.dto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { User } from '../../entities/User/user.entity';
+import { User } from 'src/modules/user/entity/user.entity';
 import { HashService } from 'src/shared/hash/hash.service';
-import { UpdateUserDto } from '../../dtos/User/update-user.dto';
+import { UpdateUserDto } from 'src/modules/user/dtos/update-user.dto';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { v4 as uuid } from 'uuid';
-import { UserDto } from '../../dtos/User/user.dto';
+import { UserDto } from 'src/modules/user/dtos/user.dto';
 
 @Injectable()
 export class UserService {

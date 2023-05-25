@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { createMap, forMember, ignore, Mapper } from '@automapper/core';
-import { User } from '../../../entities/User/user.entity';
+import { createMap, Mapper } from '@automapper/core';
+import { User } from 'src/modules/user/entity/user.entity';
 import { UserDataDto } from '../../../modules/auth/dtos/user-data.dto';
 
 @Injectable()

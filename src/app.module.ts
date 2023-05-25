@@ -2,17 +2,15 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/User/user.entity';
-import { UserService } from './services/user/user.service';
+import { User } from 'src/modules/user/entity/user.entity';
+import { UserService } from 'src/modules/user/service/user.service';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { UserProfileService } from "./shared/profiles/user/user-profile.service";
-import { UserController } from './controllers/user/user.controller';
+import { UserController } from 'src/modules/user/controller/user.controller';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthProfileService } from './shared/profiles/auth/auth-profile.service';
 import { SharedModule } from './shared/shared.module';
-import { ConfigModule } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
 
 
 @Module({
@@ -25,8 +23,7 @@ import { JwtModule } from '@nestjs/jwt';
       password: 'postgres',
       database: 'YourPlatform',
       entities: [User],
-      synchronize: true,
-      autoLoadEntities: true,
+      synchronize: false,
     }),
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
