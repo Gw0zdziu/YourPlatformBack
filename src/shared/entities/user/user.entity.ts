@@ -1,5 +1,6 @@
-import { Column, Entity, IsNull, PrimaryColumn } from 'typeorm';
+import { Column, Entity, IsNull, OneToMany, PrimaryColumn } from 'typeorm';
 import { AutoMap } from '@automapper/classes';
+import { Category } from 'src/shared/entities/category/category.entity';
 
 @Entity()
 export class User {
@@ -21,4 +22,5 @@ export class User {
 
   @Column('text', { nullable: true })
   refreshToken: string;
+
 }

@@ -1,18 +1,15 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto } from 'src/modules/user/dtos/create-user.dto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { User } from 'src/modules/user/entity/user.entity';
-import { HashService } from 'src/shared/hash/hash.service';
-import { UpdateUserDto } from 'src/modules/user/dtos/update-user.dto';
+import { User } from 'src/shared/entities/user/user.entity';
+import { HashService } from 'src/shared/services/hash/hash.service';
+import { UpdateUserDto } from 'src/shared/dtos/user/update-user.dto';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { v4 as uuid } from 'uuid';
-import { UserDto } from 'src/modules/user/dtos/user.dto';
+import { UserDto } from 'src/shared/dtos/user/user.dto';
 
 @Injectable()
 export class UserService {
@@ -47,23 +44,6 @@ export class UserService {
       const usersMap = this.classMapper.mapArray(users, User, UserDto);
       return usersMap;
     }
-  }
-
-  async createUser(newUser: CreateUserDto) {
-    const { userEmail, username } = newUser;
-    const isUserExist = await this.isUserExist(username, userEmail);
-    if (isUserExist) {
-      throw new BadRequestException('Użytkownik o takich danych już istnieje');
-    }
-    newUser.password = await this.hashSvc.hashPassword(newUser.password);
-    const user = this.classMapper.map(newUser, CreateUserDto, User);
-    user.userId = uuid();
-    await this.entities
-      .createQueryBuilder()
-      .insert()
-      .into(User)
-      .values(user)
-      .execute();
   }
   async updateToken(userId: string, refreshToken?: string){
     return await this.entities
@@ -105,20 +85,18 @@ export class UserService {
   }
 
   async isUserIdExist(userId: string): Promise<boolean> {
-    const isUserIdExist = await this.entities
+    return  await this.entities
       .getRepository(User)
       .createQueryBuilder('user')
       .where('user.userId = :userId', { userId })
       .getExists();
-    return isUserIdExist;
   }
-  async isUserExist(username: string, userEmail: string) {
-    const isUserExist = await this.entities
+  async isUserExist(username: string, userEmail: string): Promise<boolean> {
+    return await this.entities
       .getRepository(User)
       .createQueryBuilder('user')
       .where('user.userEmail = :userEmail', { userEmail })
       .orWhere('user.username = :username', { username })
       .getExists();
-    return isUserExist;
   }
 }

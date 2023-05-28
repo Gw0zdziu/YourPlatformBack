@@ -5,9 +5,12 @@ import { CreateUserDto } from 'src/shared/dtos/user/create-user.dto';
 import { User } from 'src/shared/entities/user/user.entity';
 import { UpdateUserDto } from 'src/shared/dtos/user/update-user.dto';
 import { UserDto } from 'src/shared/dtos/user/user.dto';
+import { CategoryDto } from 'src/shared/dtos/category/category.dto';
+import { Category } from 'src/shared/entities/category/category.entity';
+import { CategoryListDto } from 'src/shared/dtos/category/category-list.dto';
 
 @Injectable()
-export class UserProfileService extends AutomapperProfile {
+export class CategoryProfileService extends AutomapperProfile {
   constructor(@InjectMapper() mapper: Mapper) {
     super(mapper);
   }
@@ -16,18 +19,11 @@ export class UserProfileService extends AutomapperProfile {
     return (mapper) => {
       createMap(
         mapper,
-        CreateUserDto,
-        User,
-        forMember((dest: User) => dest.userId, ignore()),
-        forMember((dest: User) => dest.refreshToken, ignore()),
+        CategoryDto,
+        Category,
+        forMember((dest: Category) => dest.categoryId, ignore()),
       );
-      createMap(
-        mapper,
-        UpdateUserDto,
-        User,
-        forMember((dest: User) => dest.password, ignore()),
-      );
-      createMap(mapper, User, UserDto);
+      createMap(mapper, Category, CategoryListDto);
     };
   }
 }

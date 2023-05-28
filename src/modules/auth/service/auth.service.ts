@@ -2,22 +2,20 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { HashService } from 'src/shared/hash/hash.service';
-import { SignInDto } from '../dtos/sign-in.dto';
-import { User } from 'src/modules/user/entity/user.entity';
+import { HashService } from 'src/shared/services/hash/hash.service';
+import { SignInDto } from 'src/shared/dtos/auth/sign-in.dto';
+import { User } from 'src/shared/entities/user/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { CreateUserDto } from 'src/modules/user/dtos/create-user.dto';
+import { CreateUserDto } from 'src/shared/dtos/user/create-user.dto';
 import { v4 as uuid } from 'uuid';
 import { UserService } from 'src/modules/user/service/user.service';
-import { use } from 'passport';
 
 @Injectable()
 export class AuthService {
@@ -60,7 +58,11 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Nie znaleziono użytkownika');
     }
-    if (!(await this.hashSvc.comparePassword(user?.password, password))) {
+    const isPasswordMatch: boolean = await this.hashSvc.comparePassword(
+      user?.password,
+      password,
+    );
+    if (!isPasswordMatch) {
       throw new UnauthorizedException('Brak dostępu');
     }
     const tokens = await this.getTokens(

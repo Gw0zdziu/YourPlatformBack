@@ -1,8 +1,8 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { AutoMap } from '@automapper/classes';
+import { IsNull } from 'typeorm';
 
 export class CreateUserDto {
-  userId: string;
 
   @AutoMap()
   @IsNotEmpty({ message: 'Adres e-mail nie może być pusty' })
@@ -18,6 +18,4 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty({ message: 'Hasło nie może być puste' })
   password: string;
-
-  refreshToken: string;
 }
