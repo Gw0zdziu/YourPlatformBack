@@ -21,7 +21,11 @@ export class Category {
   userId: string;
 
   @AutoMap()
-  @ManyToOne(() => User)
+  @Column('text')
+  status: string;
+
+  @AutoMap()
+  @ManyToOne(() => User, (user) => user.userId)
   @JoinColumn({ name: 'userId' })
   user: User;
 }

@@ -8,6 +8,7 @@ import { Category } from 'src/shared/entities/category/category.entity';
 import { v4 as uuid } from 'uuid';
 import { User } from 'src/shared/entities/user/user.entity';
 import { CategoryListDto } from 'src/shared/dtos/category/category-list.dto';
+import { Statuses } from 'src/shared/misc/statuses';
 
 @Injectable()
 export class CategoryService {
@@ -15,6 +16,47 @@ export class CategoryService {
     @InjectDataSource() private entities: DataSource,
     @InjectMapper() private readonly classMapper: Mapper,
   ) {}
+
+  async deactivateCategory(categoryId: string): Promise<void>{
+    const category = await this.entities
+      .getRepository(Category)
+      .createQueryBuilder('category')
+      .where('category.categoryId = :categoryId', { categoryId })
+      .getOne();
+    if (!category) {
+      throw new HttpException(
+        'Taka kategoria nie istnieje',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    await this.entities
+      .getRepository(Category)
+      .createQueryBuilder()
+      .update(Category)
+      .set({ status: Statuses.UAC })
+      .where('categoryId = :categoryId', { categoryId })
+      .execute();
+  }
+
+  async getCategoryById(categoryId: string): Promise<CategoryListDto> {
+    const category = await this.entities
+      .getRepository(Category)
+      .createQueryBuilder('category')
+      .where('category.categoryId = :categoryId', { categoryId })
+      .getOne();
+    if (!category){
+      throw new HttpException(
+        'Taka kategoria nie istnieje',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const categoryMap = this.classMapper.map(
+      category,
+      Category,
+      CategoryListDto,
+    );
+    return categoryMap;
+  }
   async createNewCategory(newCategory: CategoryDto): Promise<void> {
     const { categoryName, userId } = newCategory;
     const user = await this.entities
@@ -47,7 +89,6 @@ export class CategoryService {
       Category,
     );
     categoryMap.categoryId = uuid();
-    console.log(categoryMap);
     await this.entities
       .createQueryBuilder()
       .insert()
@@ -61,13 +102,11 @@ export class CategoryService {
       .getRepository(Category)
       .createQueryBuilder('categories')
       .getMany();
-    console.log(categories)
     const mappedCategories = this.classMapper.mapArray(
       categories,
       Category,
       CategoryListDto,
     );
-    console.log(mappedCategories);
     return mappedCategories;
   }
 }

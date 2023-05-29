@@ -12,5 +12,9 @@ export class CategoryDto {
 
   @IsString()
   @AutoMap()
+  status: string;
+
+  @IsString()
+  @AutoMap()
   userId: string;
 }

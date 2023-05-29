@@ -11,5 +11,8 @@ export class CategoryListDto {
   categoryDesc?: string;
 
   @AutoMap()
+  status: string;
+
+  @AutoMap()
   userId: string;
 }
