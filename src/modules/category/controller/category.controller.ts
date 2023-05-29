@@ -4,6 +4,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CategoryDto } from 'src/shared/dtos/category/category.dto';
 import { CategoryListDto } from 'src/shared/dtos/category/category-list.dto';
 import * as http from 'http';
+import { UpdateCategoryDto } from 'src/shared/dtos/category/update-category.dto';
 
 @ApiTags('Category')
 @Controller('category')
@@ -29,11 +30,20 @@ export class CategoryController {
     return this.categorySvc.getCategoryById(categoryId);
   }
 
-  @ApiOperation( { summary: 'Deactivate category'})
+  @ApiOperation({ summary: 'Deactivate category' })
   @Put(':categoryId')
   async deactivateCategory(
     @Param('categoryId') categoryId: string,
   ): Promise<void> {
     await this.categorySvc.deactivateCategory(categoryId);
+  }
+
+  @ApiOperation({ summary: 'Update category' })
+  @Put('update/:categoryId')
+  async updateCategory(
+    @Param('categoryId') categoryId: string,
+    @Body() updatedCategory: UpdateCategoryDto,
+  ): Promise<void> {
+    await this.categorySvc.updateCategory(categoryId, updatedCategory);
   }
 }

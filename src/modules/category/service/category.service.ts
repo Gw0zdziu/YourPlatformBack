@@ -9,6 +9,7 @@ import { v4 as uuid } from 'uuid';
 import { User } from 'src/shared/entities/user/user.entity';
 import { CategoryListDto } from 'src/shared/dtos/category/category-list.dto';
 import { Statuses } from 'src/shared/misc/statuses';
+import { UpdateCategoryDto } from 'src/shared/dtos/category/update-category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -18,11 +19,7 @@ export class CategoryService {
   ) {}
 
   async deactivateCategory(categoryId: string): Promise<void>{
-    const category = await this.entities
-      .getRepository(Category)
-      .createQueryBuilder('category')
-      .where('category.categoryId = :categoryId', { categoryId })
-      .getOne();
+    const category = await this.isCategoryExist(categoryId, Statuses.ACT);
     if (!category) {
       throw new HttpException(
         'Taka kategoria nie istnieje',
@@ -39,12 +36,8 @@ export class CategoryService {
   }
 
   async getCategoryById(categoryId: string): Promise<CategoryListDto> {
-    const category = await this.entities
-      .getRepository(Category)
-      .createQueryBuilder('category')
-      .where('category.categoryId = :categoryId', { categoryId })
-      .getOne();
-    if (!category){
+    const category = await this.isCategoryExist(categoryId, Statuses.ACT)
+    if (!category) {
       throw new HttpException(
         'Taka kategoria nie istnieje',
         HttpStatus.NOT_FOUND,
@@ -108,5 +101,45 @@ export class CategoryService {
       CategoryListDto,
     );
     return mappedCategories;
+  }
+
+  async updateCategory(
+    categoryId: string,
+    updatedCategory: UpdateCategoryDto,
+  ): Promise<void> {
+    const isUpdatedCategoryExist = await this.isCategoryExist(
+      categoryId,
+      Statuses.ACT,
+    );
+    if (!isUpdatedCategoryExist){
+      throw new HttpException(
+        'Taka kategoria nie istnieje',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const categoryMap = this.classMapper.map(
+      updatedCategory,
+      UpdateCategoryDto,
+      Category,
+    );
+    console.log(categoryMap);
+    await this.entities
+      .createQueryBuilder()
+      .update(Category)
+      .set(categoryMap)
+      .where('categoryId = :categoryId', { categoryId })
+      .execute();
+  }
+
+  private async isCategoryExist(
+    categoryId: string,
+    status: string,
+  ): Promise<Category> {
+    return await this.entities
+      .getRepository(Category)
+      .createQueryBuilder('category')
+      .where('category.categoryId = :categoryId', { categoryId })
+      .andWhere('category.status = :status', { status })
+      .getOne();
   }
 }
