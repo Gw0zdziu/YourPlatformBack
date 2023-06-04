@@ -35,6 +35,26 @@ export class CategoryService {
       .execute();
   }
 
+  async getCategoriesByUserId(userId: string): Promise<CategoryListDto[]> {
+    const categories = await this.entities
+      .getRepository(Category)
+      .createQueryBuilder('category')
+      .where('category.userId = :userId', { userId })
+      .andWhere('category.status = :status', { status: Statuses.ACT })
+      .getMany();
+    if (!categories) {
+      throw new HttpException(
+        'Użytkownik posiada żadnych kategorii',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const categoriesMap = this.classMapper.mapArray(
+      categories,
+      Category,
+      CategoryListDto,
+    );
+    return categoriesMap;
+  }
   async getCategoryById(categoryId: string): Promise<CategoryListDto> {
     const category = await this.isCategoryExist(categoryId, Statuses.ACT)
     if (!category) {

@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { createMap, forMember, ignore, Mapper } from '@automapper/core';
-import { CategoryDto } from 'src/shared/dtos/category/category.dto';
-import { Category } from 'src/shared/entities/category/category.entity';
 import { GameDto } from 'src/shared/dtos/game/game.dto';
 import { Game } from 'src/shared/entities/game/game.entity';
 import { GameDataDto } from 'src/shared/dtos/game/game-data.dto';

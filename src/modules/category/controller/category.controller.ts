@@ -1,35 +1,39 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { CategoryService } from 'src/modules/category/service/category.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CategoryDto } from 'src/shared/dtos/category/category.dto';
 import { CategoryListDto } from 'src/shared/dtos/category/category-list.dto';
-import * as http from 'http';
 import { UpdateCategoryDto } from 'src/shared/dtos/category/update-category.dto';
+import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/shared/decorators/current-user/current-user.decorator';
+import { request } from 'express';
+import { UserDataDto } from 'src/shared/dtos/auth/user-data.dto';
 
 @ApiTags('Category')
 @Controller('category')
 export class CategoryController {
   constructor(private categorySvc: CategoryService) {}
 
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create new category' })
   @HttpCode(204)
   @Post('add')
   async createNewCategory(@Body() newCategory: CategoryDto): Promise<void> {
     await this.categorySvc.createNewCategory(newCategory);
   }
-
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all categories' })
-  @Get()
+  @Get('/all')
   async getAllCategories(): Promise<CategoryListDto[]> {
     return await this.categorySvc.getCategories();
   }
 
-  @ApiOperation({ summary: 'Get category by id'})
+  /*@ApiOperation({ summary: 'Get category by id'})
   @Get(':categoryId')
   async getCategoryById(@Param('categoryId') categoryId: string): Promise<CategoryListDto> {
     return this.categorySvc.getCategoryById(categoryId);
-  }
-
+  }*/
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Deactivate category' })
   @Put(':categoryId')
   async deactivateCategory(
@@ -38,6 +42,7 @@ export class CategoryController {
     await this.categorySvc.deactivateCategory(categoryId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update category' })
   @Put('update/:categoryId')
   async updateCategory(
@@ -45,5 +50,12 @@ export class CategoryController {
     @Body() updatedCategory: UpdateCategoryDto,
   ): Promise<void> {
     await this.categorySvc.updateCategory(categoryId, updatedCategory);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get all users categories' })
+  @Get('/user')
+  async getCategoriesByUserId(@Req() req){
+    return this.categorySvc.getCategoriesByUserId(req.user.userId);
   }
 }

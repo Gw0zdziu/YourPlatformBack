@@ -63,7 +63,7 @@ export class GameService {
     await this.dataSource
       .createQueryBuilder()
       .update(Game)
-      .set(updateGame)
+      .set(gameMap)
       .where('gameId = :gameId', { gameId: updateGame.gameId })
       .execute();
   }
