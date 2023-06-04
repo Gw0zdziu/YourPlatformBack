@@ -2,6 +2,7 @@ import { Column, Entity, IsNull, OneToMany, PrimaryColumn } from 'typeorm';
 import { AutoMap } from '@automapper/classes';
 import { Category } from 'src/shared/entities/category/category.entity';
 import { CategoryDto } from 'src/shared/dtos/category/category.dto';
+import { Game } from 'src/shared/entities/game/game.entity';
 
 @Entity()
 export class User {
@@ -26,4 +27,7 @@ export class User {
 
   @OneToMany(() => Category, (category) => category.userId)
   categories: Category[];
+
+  @OneToMany(() => Game, (game) => game.userId)
+  games: Game[];
 }

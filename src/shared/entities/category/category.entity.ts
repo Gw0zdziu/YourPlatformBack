@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import { AutoMap } from '@automapper/classes';
 import { User } from 'src/shared/entities/user/user.entity';
+import { Game } from 'src/shared/entities/game/game.entity';
 
 @Entity()
 export class Category {
@@ -24,8 +25,10 @@ export class Category {
   @Column('text')
   status: string;
 
-  @AutoMap()
   @ManyToOne(() => User, (user) => user.userId)
   @JoinColumn({ name: 'userId' })
   user: User;
+
+  @OneToMany(() => Game, (game) => game.categoryId)
+  games: Game[];
 }

@@ -1,5 +1,7 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { AutoMap } from '@automapper/classes';
+import { User } from 'src/shared/entities/user/user.entity';
+import { Category } from 'src/shared/entities/category/category.entity';
 
 @Entity()
 export class Game {
@@ -15,12 +17,23 @@ export class Game {
   @Column('text')
   userId: string;
 
+  @AutoMap()
   @Column('text')
   gameName: string;
 
+  @AutoMap()
   @Column('text')
   gameDesc: string;
 
+  @AutoMap()
   @Column('decimal')
   gameRating: number;
+
+  @ManyToOne(() => User, (user: User) => user.userId)
+  @JoinColumn({ name: 'userId' })
+  user: User;
+
+  @ManyToOne(() => Category, (category: Category) => category.categoryId)
+  @JoinColumn({ name: 'categoryId' })
+  category: Category;
 }

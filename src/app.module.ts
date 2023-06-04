@@ -14,6 +14,10 @@ import { Category } from 'src/shared/entities/category/category.entity';
 import { UserModule } from 'src/modules/user/user.module';
 import { CategoryModule } from 'src/modules/category/category.module';
 import { CategoryProfileService } from 'src/shared/profiles/category/category-profile.service';
+import { Game } from 'src/shared/entities/game/game.entity';
+import { GameService } from 'src/modules/game/service/game.service';
+import { GameModule } from 'src/modules/game/game.module';
+import { GameProfileService } from 'src/shared/profiles/game/game-profile.service';
 
 @Module({
   imports: [
@@ -26,7 +30,7 @@ import { CategoryProfileService } from 'src/shared/profiles/category/category-pr
         username: 'postgres',
         password: 'postgres',
         database: 'YourPlatform',
-        entities: [User, Category],
+        entities: [User, Category, Game],
         synchronize: true,
         autoLoadEntities: true,
       }),
@@ -39,6 +43,7 @@ import { CategoryProfileService } from 'src/shared/profiles/category/category-pr
     AuthModule,
     UserModule,
     CategoryModule,
+    GameModule,
   ],
   controllers: [],
   providers: [
@@ -47,6 +52,7 @@ import { CategoryProfileService } from 'src/shared/profiles/category/category-pr
     UserProfileService,
     CategoryProfileService,
     AuthProfileService,
+    GameProfileService,
   ],
 })
 export class AppModule {}

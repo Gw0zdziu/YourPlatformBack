@@ -122,7 +122,6 @@ export class CategoryService {
       UpdateCategoryDto,
       Category,
     );
-    console.log(categoryMap);
     await this.entities
       .createQueryBuilder()
       .update(Category)
