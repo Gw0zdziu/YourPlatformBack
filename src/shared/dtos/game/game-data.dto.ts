@@ -1,6 +1,7 @@
 import { AutoMap } from '@automapper/classes';
 
 export class GameDataDto {
+
   @AutoMap()
   gameId: string;
 

@@ -6,8 +6,6 @@ import { CategoryListDto } from 'src/shared/dtos/category/category-list.dto';
 import { UpdateCategoryDto } from 'src/shared/dtos/category/update-category.dto';
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/shared/decorators/current-user/current-user.decorator';
-import { request } from 'express';
-import { UserDataDto } from 'src/shared/dtos/auth/user-data.dto';
 
 @ApiTags('Category')
 @Controller('category')
@@ -23,16 +21,17 @@ export class CategoryController {
   }
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all categories' })
-  @Get('/all')
+  @Get('all')
   async getAllCategories(): Promise<CategoryListDto[]> {
     return await this.categorySvc.getCategories();
   }
 
-  /*@ApiOperation({ summary: 'Get category by id'})
+  @ApiOperation({ summary: 'Get category by id'})
   @Get(':categoryId')
   async getCategoryById(@Param('categoryId') categoryId: string): Promise<CategoryListDto> {
     return this.categorySvc.getCategoryById(categoryId);
-  }*/
+  }
+
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Deactivate category' })
   @Put(':categoryId')
@@ -54,8 +53,8 @@ export class CategoryController {
 
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all users categories' })
-  @Get('/user')
-  async getCategoriesByUserId(@Req() req){
-    return this.categorySvc.getCategoriesByUserId(req.user.userId);
+  @Get('user')
+  async getCategoriesByUserId(@CurrentUser() req){
+    return this.categorySvc.getCategoriesByUserId(req.userId);
   }
 }

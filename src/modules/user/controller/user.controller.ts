@@ -5,12 +5,14 @@ import {
   Get,
   HttpCode,
   Param,
-  Put,
+  Put, UseGuards
 } from '@nestjs/common';
 import { UserService } from 'src/modules/user/service/user.service';
 import { UpdateUserDto } from 'src/shared/dtos/user/update-user.dto';
 import { UserDto } from 'src/shared/dtos/user/user.dto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from 'src/shared/decorators/current-user/current-user.decorator';
+import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 
 
 @ApiTags('User')
@@ -18,22 +20,27 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 export class UserController {
   constructor(private userSvc: UserService) {}
 
+  @ApiOperation({ summary: 'Get data logged user' })
+  @UseGuards(JwtAuthGuard)
   @Get(':userId')
-  async getUser(@Param('userId') userId: string): Promise<UserDto> {
-    return await this.userSvc.getUser(userId);
+  async getUser(@CurrentUser() req): Promise<UserDto> {
+    return await this.userSvc.getUser(req.userId);
   }
 
-  @Get()
+  @ApiOperation({ summary: 'Get data all users' })
+  @Get('all')
   async getUsers(): Promise<UserDto[]> {
     return await this.userSvc.getUsers();
   }
 
+  @ApiOperation({ summary: 'Update user' })
   @Put()
   @HttpCode(204)
   async updateUser(@Body() updateUser: UpdateUserDto): Promise<void> {
     await this.userSvc.updateUser(updateUser);
   }
 
+  @ApiOperation({ summary: 'Delete user' })
   @Delete(':userId')
   @HttpCode(204)
   async deleteUser(@Param('userId') userId: string): Promise<void> {

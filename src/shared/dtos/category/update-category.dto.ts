@@ -1,9 +1,11 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { Statuses } from 'src/shared/misc/statuses';
 
 export class UpdateCategoryDto {
-
   @ApiProperty()
+  @IsNotEmpty()
   @AutoMap()
   categoryName: string;
 
@@ -12,10 +14,12 @@ export class UpdateCategoryDto {
   categoryDesc?: string;
 
   @ApiProperty()
+  @IsEnum(Statuses)
   @AutoMap()
   status: string;
 
   @ApiProperty()
+  @IsString()
   @AutoMap()
   userId: string;
 }
