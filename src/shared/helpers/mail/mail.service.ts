@@ -10,7 +10,7 @@ export class MailService {
       to: email,
       from: 'noreply@yourplatform.com',
       subject: 'Testing Nest MailerModule ✔',
-      html: '<b>Założono nowe konto na platformie yourPlatform</b>'
+      html: '<b>Założono nowe konto na platformie yourPlatform</b>'s,
     });
   }
 }

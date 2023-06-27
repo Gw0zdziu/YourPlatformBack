@@ -10,7 +10,7 @@ import { MailService } from 'src/shared/helpers/mail/mail.service';
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private authSvc: AuthService, private mailService: MailService) {}
+  constructor(private authSvc: AuthService) {}
 
   @ApiOperation({ summary: 'Register new user' })
   @Post('signup')

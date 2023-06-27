@@ -15,7 +15,6 @@ import { UserModule } from 'src/modules/user/user.module';
 import { CategoryModule } from 'src/modules/category/category.module';
 import { CategoryProfileService } from 'src/shared/profiles/category/category-profile.service';
 import { Game } from 'src/shared/entities/game/game.entity';
-import { GameService } from 'src/modules/game/service/game.service';
 import { GameModule } from 'src/modules/game/game.module';
 import { GameProfileService } from 'src/shared/profiles/game/game-profile.service';
 
