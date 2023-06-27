@@ -1,16 +1,23 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { config } from 'rxjs';
 
 @Injectable()
 export class MailService {
-  constructor(private mailerService: MailerService) {}
+  constructor(private mailerService: MailerService, private configService: ConfigService) {}
 
-  sendMail(email: string) {
-    this.mailerService.sendMail({
+  async sendMail(email: string) {
+    const url = this.configService.get('VERIFY_EMAIL_PAGE_URL');
+    await this.mailerService.sendMail({
       to: email,
       from: 'noreply@yourplatform.com',
       subject: 'Testing Nest MailerModule ✔',
-      html: '<b>Założono nowe konto na platformie yourPlatform</b>',
+      template: './verify-email',
+      context: {
+        email: email,
+        url: url,
+      },
     });
   }
 }

@@ -10,7 +10,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     MailerModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule.forRoot({ isGlobal: true })],
       useFactory: async (config: ConfigService) => ({
         transport: {
           host: config.get('EMAIL_HOST'),
@@ -25,7 +25,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           from: 'gw0zdziu09@gmail.com',
         },
         template: {
-          dir: join(__dirname, 'templates'),
+          dir: join('src/shared/helpers/mail/templates'),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: false,
