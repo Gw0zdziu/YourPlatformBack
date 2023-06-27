@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 import { AutoMap } from '@automapper/classes';
 import { IsNull } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';

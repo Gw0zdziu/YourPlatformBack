@@ -8,7 +8,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { HashService } from 'src/shared/services/hash/hash.service';
+import { HashService } from 'src/shared/helpers/hash/hash.service';
 import { SignInDto } from 'src/shared/dtos/auth/sign-in.dto';
 import { User } from 'src/shared/entities/user/user.entity';
 import { JwtService } from '@nestjs/jwt';
@@ -16,6 +16,7 @@ import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from 'src/shared/dtos/user/create-user.dto';
 import { v4 as uuid } from 'uuid';
 import { UserService } from 'src/modules/user/service/user.service';
+import { MailService } from 'src/shared/helpers/mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,7 @@ export class AuthService {
     private jwtSvc: JwtService,
     private confSvc: ConfigService,
     private userSvc: UserService,
+    private mailSvc: MailService,
   ) {}
 
   async signUp(newUser: CreateUserDto) {
@@ -45,7 +47,7 @@ export class AuthService {
       .execute();
     const tokens = await this.getTokens(user.userId, username, user.userEmail);
     await this.updateRefreshToken(user.userId, tokens.refreshToken);
-    return tokens;
+    this.mailSvc.sendMail(userEmail);
   }
 
   async signIn(signInData: SignInDto): Promise<object> {
