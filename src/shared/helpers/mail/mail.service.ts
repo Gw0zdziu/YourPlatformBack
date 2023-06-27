@@ -6,14 +6,11 @@ export class MailService {
   constructor(private mailerService: MailerService) {}
 
   sendMail(email: string) {
-    this.mailerService
-      .sendMail({
-        to: email, // list of receivers
-        from: 'noreply@yourplatform.com', // sender address
-        subject: 'Testing Nest MailerModule ✔', // Subject line
-        html: '<b>Założono nowe konto na platformie yourPlatform</b>', // HTML body content
-      })
-      .then()
-      .catch();
+    this.mailerService.sendMail({
+      to: email,
+      from: 'noreply@yourplatform.com',
+      subject: 'Testing Nest MailerModule ✔',
+      html: '<b>Założono nowe konto na platformie yourPlatform</b>'
+    });
   }
 }

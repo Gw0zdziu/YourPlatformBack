@@ -7,8 +7,6 @@ import { RefreshTokenGuard } from 'src/shared/guards/refresh-token.guard';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { MailService } from 'src/shared/helpers/mail/mail.service';
 
-
-
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
@@ -19,7 +17,6 @@ export class AuthController {
   async signUp(@Body() newUser: CreateUserDto) {
     return this.authSvc.signUp(newUser);
   }
-
 
   @ApiOperation({ summary: 'Login user' })
   @Post('signin')

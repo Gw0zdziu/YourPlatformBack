@@ -5,17 +5,20 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
 import { MailService } from 'src/shared/helpers/mail/mail.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     MailerModule.forRootAsync({
-      useFactory: () => ({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => ({
         transport: {
-          host: 'sandbox.smtp.mailtrap.io',
-          port: 2525,
+          host: config.get('EMAIL_HOST'),
+          port: config.get('EMAIL_PORT'),
+          secure: false,
           auth: {
-            user: '26738fea25f51b',
-            pass: '0ef32fa7fb1aa0',
+            user: config.get('EMAIL_USER'),
+            pass: config.get('EMAIL_PASSWORD'),
           },
         },
         defaults: {
@@ -29,6 +32,7 @@ import { MailService } from 'src/shared/helpers/mail/mail.service';
           },
         },
       }),
+      inject: [ConfigService],
     }),
   ],
   providers: [HashService, UserService, MailService],
