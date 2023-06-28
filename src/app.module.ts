@@ -17,8 +17,8 @@ import { CategoryProfileService } from 'src/shared/profiles/category/category-pr
 import { Game } from 'src/shared/entities/game/game.entity';
 import { GameModule } from 'src/modules/game/game.module';
 import { GameProfileService } from 'src/shared/profiles/game/game-profile.service';
-import { JwtModule } from "@nestjs/jwt";
-import { EmailConfirmationModule } from "src/modules/email-confirmation/email-confirmation.module";
+import { JwtModule } from '@nestjs/jwt';
+import { EmailConfirmationModule } from 'src/modules/email-confirmation/email-confirmation.module';
 
 @Module({
   imports: [
