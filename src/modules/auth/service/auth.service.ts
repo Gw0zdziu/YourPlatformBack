@@ -36,9 +36,10 @@ export class AuthService {
     if (isUserExist) {
       throw new BadRequestException('Użytkownik o takich danych już istnieje');
     }
-    newUser.password = await this.hashSvc.hashPassword(newUser.password);
     const user = this.classMapper.map(newUser, CreateUserDto, User);
     user.userId = uuid();
+    user.password = await this.hashSvc.hashPassword(newUser.password);
+    user.isEmailConfirmed = false;
     await this.entities
       .createQueryBuilder()
       .insert()
@@ -47,7 +48,7 @@ export class AuthService {
       .execute();
     const tokens = await this.getTokens(user.userId, username, user.userEmail);
     await this.updateRefreshToken(user.userId, tokens.refreshToken);
-    this.mailSvc.sendMail(userEmail);
+    await this.mailSvc.sendMailVerification(userEmail);
   }
 
   async signIn(signInData: SignInDto): Promise<object> {

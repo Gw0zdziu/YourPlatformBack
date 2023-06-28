@@ -25,6 +25,10 @@ export class User {
   @Column('text', { nullable: true })
   refreshToken: string;
 
+  @AutoMap()
+  @Column('boolean', { nullable: false })
+  isEmailConfirmed: boolean;
+
   @OneToMany(() => Category, (category) => category.userId)
   categories: Category[];
 

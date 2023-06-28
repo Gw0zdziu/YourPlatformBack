@@ -20,6 +20,7 @@ export class UserProfileService extends AutomapperProfile {
         User,
         forMember((dest: User) => dest.userId, ignore()),
         forMember((dest: User) => dest.refreshToken, ignore()),
+        forMember((dest: User) => dest.isEmailConfirmed, ignore()),
       );
       createMap(
         mapper,

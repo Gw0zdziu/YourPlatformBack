@@ -17,10 +17,14 @@ import { CategoryProfileService } from 'src/shared/profiles/category/category-pr
 import { Game } from 'src/shared/entities/game/game.entity';
 import { GameModule } from 'src/modules/game/game.module';
 import { GameProfileService } from 'src/shared/profiles/game/game-profile.service';
+import { JwtModule } from "@nestjs/jwt";
+import { EmailConfirmationModule } from "src/modules/email-confirmation/email-confirmation.module";
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: ['.env.dev', '.env.prod'] }),
+    ConfigModule.forRoot({
+      envFilePath: ['./src/environments/.env.dev', '.env.prod'],
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => ({
@@ -31,17 +35,21 @@ import { GameProfileService } from 'src/shared/profiles/game/game-profile.servic
         password: config.get('DB_PASSWORD'),
         database: config.get('DB_NAME'),
         entities: [User, Category, Game],
+        autoLoadEntities: true,
+        synchronize: true,
       }),
       inject: [ConfigService],
     }),
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    JwtModule.register({}),
     SharedModule,
     AuthModule,
     UserModule,
     CategoryModule,
     GameModule,
+    EmailConfirmationModule,
   ],
   controllers: [],
   providers: [
