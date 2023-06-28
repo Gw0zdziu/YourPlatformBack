@@ -12,4 +12,10 @@ export class EmailConfirmationController {
   async confirmEmail(@Param('token') token: string) {
     return this.emailConfirmationService.confirmEmail(token);
   }
+
+  @ApiOperation({summary: 'Resend email verification link'})
+  @Get(':email')
+  async resendEmailVerificationLink(@Param('email') email: string){
+    await this.emailConfirmationService.resendEmailVerificationLink(email);
+  }
 }
