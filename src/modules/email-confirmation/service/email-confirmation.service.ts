@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { User } from 'src/shared/entities/user/user.entity';
-import { MailService } from 'src/shared/helpers/mail/mail.service';
+import { MailHelperService } from 'src/shared/helpers/mail/mail-helper.service';
 
 @Injectable()
 export class EmailConfirmationService {
@@ -12,7 +12,7 @@ export class EmailConfirmationService {
     @InjectDataSource() private entities: DataSource,
     private jwtService: JwtService,
     private configService: ConfigService,
-    private mailService: MailService,
+    private mailService: MailHelperService,
   ) {}
 
   async confirmEmail(token: string) {

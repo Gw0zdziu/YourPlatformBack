@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class MailService {
+export class MailHelperService {
   url: string = this.configService.get('FRONT_URL');
   constructor(
     private mailerService: MailerService,

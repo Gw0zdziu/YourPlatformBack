@@ -5,15 +5,15 @@ import {
   Get,
   HttpCode,
   Param,
-  Put, UseGuards
+  Put,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from 'src/modules/user/service/user.service';
 import { UpdateUserDto } from 'src/shared/dtos/user/update-user.dto';
 import { UserDto } from 'src/shared/dtos/user/user.dto';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/shared/decorators/current-user/current-user.decorator';
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
-
 
 @ApiTags('User')
 @Controller('user')
@@ -45,5 +45,17 @@ export class UserController {
   @HttpCode(204)
   async deleteUser(@Param('userId') userId: string): Promise<void> {
     await this.userSvc.deleteUser(userId);
+  }
+
+  @ApiOperation({ summary: 'Does the email address exist?' })
+  @Get(':userEmail')
+  async isEmailExist(@Param('userEmail') userEmail: string): Promise<boolean> {
+    return this.userSvc.isEmailExist(userEmail);
+  }
+
+  @ApiOperation({ summary: 'Does the username exist?' })
+  @Get(':username')
+  async isUserNameExist(@Param('username') username: string): Promise<boolean> {
+    return this.userSvc.isUserNameExist(username);
   }
 }

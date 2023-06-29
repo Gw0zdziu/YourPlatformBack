@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { GameService } from 'src/modules/game/service/game.service';
 import { GameDto } from 'src/shared/dtos/game/game.dto';
 import { GameDataDto } from 'src/shared/dtos/game/game-data.dto';
@@ -34,7 +43,7 @@ export class GameController {
 
   @ApiOperation({ summary: 'Update game' })
   @UseGuards(JwtAuthGuard)
-  @Put()
+  @Patch()
   async updateGame(@Body() updateGame: UpdateGameDto): Promise<void> {
     await this.gameSvc.updateGame(updateGame);
   }

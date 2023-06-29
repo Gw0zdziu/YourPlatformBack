@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -16,7 +17,6 @@ export class UserService {
   constructor(
     @InjectDataSource() private entities: DataSource,
     @InjectMapper() private readonly classMapper: Mapper,
-    private hashSvc: HashService,
   ) {}
 
   async getUser(userId: string): Promise<UserDto> {
@@ -27,10 +27,9 @@ export class UserService {
       .getOne();
     if (!user) {
       throw new NotFoundException('Nie znaleziono użytkownika');
-    } else {
-      const userMap = this.classMapper.map(user, User, UserDto);
-      return userMap;
     }
+    const userMap = this.classMapper.map(user, User, UserDto);
+    return userMap;
   }
 
   async getUsers(): Promise<UserDto[]> {
@@ -40,12 +39,16 @@ export class UserService {
       .getMany();
     if (!users) {
       throw new NotFoundException('Nie znaleziono użytkowników');
-    } else {
-      const usersMap = this.classMapper.mapArray(users, User, UserDto);
-      return usersMap;
     }
+    const usersMap = this.classMapper.mapArray(users, User, UserDto);
+    return usersMap;
   }
-  async updateToken(userId: string, refreshToken?: string){
+
+  async updateToken(userId: string, refreshToken?: string) {
+    const isUserIdExist = await this.isUserIdExist(userId);
+    if (!isUserIdExist) {
+      throw new NotFoundException('Nie znaleziono użytkownika');
+    }
     return await this.entities
       .createQueryBuilder()
       .update(User)
@@ -58,45 +61,58 @@ export class UserService {
     const { userId, userEmail, userName } = updateDataUser;
     const isUserIdExist = await this.isUserIdExist(userId);
     if (!isUserIdExist) {
-      throw new NotFoundException('Nie znaleziono takie użytkownika');
-    } else {
-      const user = this.classMapper.map(updateDataUser, UpdateUserDto, User);
-      await this.entities
-        .createQueryBuilder()
-        .update(User)
-        .set(user)
-        .where('userId = :userId', { userId })
-        .execute();
+      throw new NotFoundException('Nie znaleziono użytkownika');
     }
+    const isUserExist = await this.isEmailExist(userEmail);
+    if (isUserExist) {
+      throw new BadRequestException('Użytkownik o takim emailu już istnieje');
+    }
+    const isUserNameExist = await this.isUserNameExist(userName);
+    if (isUserNameExist) {
+      throw new BadRequestException('Użytkownik o takiej nazwie już istnieje');
+    }
+    const user = this.classMapper.map(updateDataUser, UpdateUserDto, User);
+    await this.entities
+      .createQueryBuilder()
+      .update(User)
+      .set(user)
+      .where('userId = :userId', { userId })
+      .execute();
   }
 
   async deleteUser(userId: string): Promise<void> {
     const isUserIdExist = await this.isUserIdExist(userId);
     if (!isUserIdExist) {
-      throw new NotFoundException('Nie znaleziono takie użytkownika');
-    } else {
-      await this.entities
-        .createQueryBuilder()
-        .delete()
-        .from(User)
-        .where('userId = :userId', { userId })
-        .execute();
+      throw new NotFoundException('Nie znaleziono użytkownika');
     }
+    await this.entities
+      .createQueryBuilder()
+      .delete()
+      .from(User)
+      .where('userId = :userId', { userId })
+      .execute();
   }
 
   async isUserIdExist(userId: string): Promise<boolean> {
-    return  await this.entities
+    return await this.entities
       .getRepository(User)
       .createQueryBuilder('user')
       .where('user.userId = :userId', { userId })
       .getExists();
   }
-  async isUserExist(username: string, userEmail: string): Promise<boolean> {
+  async isEmailExist(userEmail: string): Promise<boolean> {
     return await this.entities
       .getRepository(User)
       .createQueryBuilder('user')
       .where('user.userEmail = :userEmail', { userEmail })
-      .orWhere('user.username = :username', { username })
+      .getExists();
+  }
+
+  async isUserNameExist(username: string): Promise<boolean> {
+    return await this.entities
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username })
       .getExists();
   }
 }

@@ -16,7 +16,7 @@ import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from 'src/shared/dtos/user/create-user.dto';
 import { v4 as uuid } from 'uuid';
 import { UserService } from 'src/modules/user/service/user.service';
-import { MailService } from 'src/shared/helpers/mail/mail.service';
+import { MailHelperService } from 'src/shared/helpers/mail/mail-helper.service';
 
 @Injectable()
 export class AuthService {
@@ -27,14 +27,18 @@ export class AuthService {
     private jwtSvc: JwtService,
     private confSvc: ConfigService,
     private userSvc: UserService,
-    private mailSvc: MailService,
+    private mailSvc: MailHelperService,
   ) {}
 
   async signUp(newUser: CreateUserDto) {
     const { userEmail, username } = newUser;
-    const isUserExist = await this.userSvc.isUserExist(username, userEmail);
+    const isUserExist = await this.userSvc.isEmailExist(userEmail);
     if (isUserExist) {
-      throw new BadRequestException('Użytkownik o takich danych już istnieje');
+      throw new BadRequestException('Użytkownik o takim emailu już istnieje');
+    }
+    const isUserNameExist = await this.userSvc.isUserNameExist(username);
+    if (isUserNameExist) {
+      throw new BadRequestException('Użytkownik o takiej nazwie już istnieje');
     }
     const user = this.classMapper.map(newUser, CreateUserDto, User);
     user.userId = uuid();

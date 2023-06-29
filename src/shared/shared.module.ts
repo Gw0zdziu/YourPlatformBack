@@ -4,7 +4,7 @@ import { UserService } from 'src/modules/user/service/user.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
-import { MailService } from 'src/shared/helpers/mail/mail.service';
+import { MailHelperService } from 'src/shared/helpers/mail/mail-helper.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
@@ -37,7 +37,7 @@ import { JwtModule } from '@nestjs/jwt';
     }),
     JwtModule.register({}),
   ],
-  providers: [HashService, UserService, MailService],
-  exports: [HashService, UserService, MailService],
+  providers: [HashService, UserService, MailHelperService],
+  exports: [HashService, UserService, MailHelperService],
 })
 export class SharedModule {}
