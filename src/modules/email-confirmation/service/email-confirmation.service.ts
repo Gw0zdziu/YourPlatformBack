@@ -41,13 +41,9 @@ export class EmailConfirmationService {
           .where('userEmail = :userEmail', { userEmail: user.userEmail })
           .execute();
       }
-    }
-    catch (error) {
-      if (error?.name === 'TokenExpiredError'){
-        throw new HttpException(
-          'Link aktywacyjny wygasł',
-          HttpStatus.CONFLICT,
-        );
+    } catch (error) {
+      if (error?.name === 'TokenExpiredError') {
+        throw new HttpException('Link aktywacyjny wygasł', HttpStatus.CONFLICT);
       }
     }
     throw new HttpException(

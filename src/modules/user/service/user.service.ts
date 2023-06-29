@@ -1,12 +1,7 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { User } from 'src/shared/entities/user/user.entity';
-import { HashService } from 'src/shared/helpers/hash/hash.service';
 import { UpdateUserDto } from 'src/shared/dtos/user/update-user.dto';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
@@ -28,8 +23,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('Nie znaleziono użytkownika');
     }
-    const userMap = this.classMapper.map(user, User, UserDto);
-    return userMap;
+    return this.classMapper.map(user, User, UserDto);
   }
 
   async getUsers(): Promise<UserDto[]> {
@@ -40,8 +34,7 @@ export class UserService {
     if (!users) {
       throw new NotFoundException('Nie znaleziono użytkowników');
     }
-    const usersMap = this.classMapper.mapArray(users, User, UserDto);
-    return usersMap;
+    return this.classMapper.mapArray(users, User, UserDto);
   }
 
   async updateToken(userId: string, refreshToken?: string) {
