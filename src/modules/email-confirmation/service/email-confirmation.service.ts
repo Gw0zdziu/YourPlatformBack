@@ -28,12 +28,6 @@ export class EmailConfirmationService {
             userEmail: payload.email,
           })
           .getOne();
-        if (!user) {
-          throw new HttpException(
-            'Nie znaleziono użytkownika',
-            HttpStatus.BAD_REQUEST,
-          );
-        }
         await this.entities
           .createQueryBuilder()
           .update(User)
