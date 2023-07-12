@@ -78,7 +78,14 @@ export class AuthService {
       user.userEmail,
     );
     await this.updateRefreshToken(user.userId, tokens.refreshToken);
-    return tokens;
+    return {
+      userId: user.userId,
+      username: user.username,
+      userEmail: user.userEmail,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      isConfirmed: user.isEmailConfirmed
+    };
   }
 
   async updateRefreshToken(userId: string, refreshToken: string) {
@@ -87,8 +94,7 @@ export class AuthService {
   }
 
   async logout(userId: string) {
-    const refreshToken = null;
-    return this.userSvc.updateToken(userId, refreshToken);
+    return this.userSvc.updateToken(userId, null);
   }
 
   async getTokens(userId: string, username: string, userEmail: string) {

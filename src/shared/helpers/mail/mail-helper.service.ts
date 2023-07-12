@@ -18,7 +18,6 @@ export class MailHelperService {
       secret: this.configService.get('JWT_VERIFICATION_EMAIL_TOKEN'),
       expiresIn: `1h`,
     });
-    console.log(token);
     await this.mailerService.sendMail({
       to: email,
       from: 'noreply@yourplatform.com',
