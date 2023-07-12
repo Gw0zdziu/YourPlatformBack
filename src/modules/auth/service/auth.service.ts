@@ -84,7 +84,7 @@ export class AuthService {
       userEmail: user.userEmail,
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
-      isConfirmed: user.isEmailConfirmed
+      isConfirmed: user.isEmailConfirmed,
     };
   }
 
