@@ -1,9 +1,9 @@
 import {
   BadRequestException,
-  ForbiddenException,
+  ForbiddenException, HttpException, HttpStatus,
   Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+  UnauthorizedException
+} from "@nestjs/common";
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
@@ -136,7 +136,7 @@ export class AuthService {
       .where('user.userId = :userId', { userId })
       .getOne();
     if (!user || !user.refreshToken) {
-      throw new ForbiddenException('Brak dostępu');
+      throw new HttpException('Brak dostępu', HttpStatus.UNAUTHORIZED);
     }
     const refreshTokenMatch = await this.hashSvc.comparePassword(
       user.refreshToken,
