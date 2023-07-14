@@ -44,7 +44,7 @@ export class CategoryService {
       .getMany();
     if (!categories) {
       throw new HttpException(
-        'Użytkownik posiada żadnych kategorii',
+        'Użytkownik nie posiada żadnych kategorii',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -55,6 +55,7 @@ export class CategoryService {
     );
     return categoriesMap;
   }
+
   async getCategoryById(categoryId: string): Promise<CategoryListDto> {
     const category = await this.isCategoryExist(categoryId, Statuses.ACT)
     if (!category) {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, HttpCode, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { CategoryService } from 'src/modules/category/service/category.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CategoryDto } from 'src/shared/dtos/category/category.dto';
@@ -12,7 +12,7 @@ import { CurrentUser } from 'src/shared/decorators/current-user/current-user.dec
 export class CategoryController {
   constructor(private categorySvc: CategoryService) {}
 
-  @UseGuards(JwtAuthGuard)
+  /*@UseGuards(JwtAuthGuard)*/
   @ApiOperation({ summary: 'Create new category' })
   @HttpCode(204)
   @Post('add')
@@ -27,7 +27,7 @@ export class CategoryController {
   }
 
   @ApiOperation({ summary: 'Get category by id'})
-  @Get(':categoryId')
+  @Get('/:categoryId')
   async getCategoryById(@Param('categoryId') categoryId: string): Promise<CategoryListDto> {
     return this.categorySvc.getCategoryById(categoryId);
   }
@@ -52,9 +52,9 @@ export class CategoryController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get all users categories' })
-  @Get('user')
-  async getCategoriesByUserId(@CurrentUser() req){
-    return this.categorySvc.getCategoriesByUserId(req.userId);
+  @ApiOperation({ summary: 'Get all user categories' })
+  @Get('by/user')
+  async getCategoriesByUserId(@Headers('userId') userId): Promise<CategoryListDto[]>{
+    return this.categorySvc.getCategoriesByUserId(userId);
   }
 }
