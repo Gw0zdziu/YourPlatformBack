@@ -18,7 +18,7 @@ export class CategoryService {
     @InjectMapper() private readonly classMapper: Mapper,
   ) {}
 
-  async deactivateCategory(categoryId: string): Promise<void>{
+  async deactivateCategory(categoryId: string): Promise<void> {
     const category = await this.isCategoryExist(categoryId, Statuses.ACT);
     if (!category) {
       throw new HttpException(
@@ -35,10 +35,12 @@ export class CategoryService {
       .execute();
   }
 
-  async getCategoriesByUserId(userId: string): Promise<CategoryListDto[]> {
+  async getCategoriesByUserId(userId: string): Promise<Category[]> {
     const categories = await this.entities
       .getRepository(Category)
       .createQueryBuilder('category')
+      .leftJoin('category.games', 'game')
+      .loadRelationCountAndMap('category.gameCount', 'category.games')
       .where('category.userId = :userId', { userId })
       .andWhere('category.status = :status', { status: Statuses.ACT })
       .getMany();
@@ -48,28 +50,18 @@ export class CategoryService {
         HttpStatus.NOT_FOUND,
       );
     }
-    const categoriesMap = this.classMapper.mapArray(
-      categories,
-      Category,
-      CategoryListDto,
-    );
-    return categoriesMap;
+    return categories;
   }
 
   async getCategoryById(categoryId: string): Promise<CategoryListDto> {
-    const category = await this.isCategoryExist(categoryId, Statuses.ACT)
+    const category = await this.isCategoryExist(categoryId, Statuses.ACT);
     if (!category) {
       throw new HttpException(
         'Taka kategoria nie istnieje',
         HttpStatus.NOT_FOUND,
       );
     }
-    const categoryMap = this.classMapper.map(
-      category,
-      Category,
-      CategoryListDto,
-    );
-    return categoryMap;
+    return this.classMapper.map(category, Category, CategoryListDto);
   }
   async createNewCategory(newCategory: CategoryDto): Promise<void> {
     const { categoryName, userId } = newCategory;
@@ -103,6 +95,7 @@ export class CategoryService {
       Category,
     );
     categoryMap.categoryId = uuid();
+    categoryMap.status = Statuses.ACT;
     await this.entities
       .createQueryBuilder()
       .insert()
@@ -116,12 +109,7 @@ export class CategoryService {
       .getRepository(Category)
       .createQueryBuilder('categories')
       .getMany();
-    const mappedCategories = this.classMapper.mapArray(
-      categories,
-      Category,
-      CategoryListDto,
-    );
-    return mappedCategories;
+    return this.classMapper.mapArray(categories, Category, CategoryListDto);
   }
 
   async updateCategory(
@@ -132,7 +120,7 @@ export class CategoryService {
       categoryId,
       Statuses.ACT,
     );
-    if (!isUpdatedCategoryExist){
+    if (!isUpdatedCategoryExist) {
       throw new HttpException(
         'Taka kategoria nie istnieje',
         HttpStatus.NOT_FOUND,

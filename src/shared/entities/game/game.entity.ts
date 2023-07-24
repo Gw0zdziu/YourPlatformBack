@@ -29,11 +29,11 @@ export class Game {
   @Column('decimal')
   gameRating: number;
 
-  @ManyToOne(() => User, (user: User) => user.userId)
+  @ManyToOne(() => User, (user: User) => user.games)
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Category, (category: Category) => category.categoryId)
-  @JoinColumn({ name: 'categoryId' })
+  @ManyToOne(() => Category, (category: Category) => category.games)
+  @JoinColumn({ name: 'categoryId', referencedColumnName: 'categoryId' })
   category: Category;
 }

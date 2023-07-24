@@ -15,4 +15,7 @@ export class CategoryListDto {
 
   @AutoMap()
   userId: string;
+
+  @AutoMap()
+  gameCount: number;
 }

@@ -20,7 +20,10 @@ export class CategoryProfileService extends AutomapperProfile {
         Category,
         forMember((dest: Category) => dest.categoryId, ignore()),
       );
-      createMap(mapper, Category, CategoryListDto);
+      createMap(
+        mapper,
+        Category,
+        CategoryListDto,);
       createMap(
         mapper,
         UpdateCategoryDto,

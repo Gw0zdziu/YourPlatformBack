@@ -28,9 +28,9 @@ export class User {
   @Column('boolean', { nullable: false })
   isEmailConfirmed: boolean;
 
-  @OneToMany(() => Category, (category) => category.userId)
+  @OneToMany(() => Category, (category) => category.user)
   categories: Category[];
 
-  @OneToMany(() => Game, (game) => game.userId)
+  @OneToMany(() => Game, (game) => game.user)
   games: Game[];
 }

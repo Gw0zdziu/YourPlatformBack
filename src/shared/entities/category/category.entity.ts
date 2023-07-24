@@ -25,10 +25,11 @@ export class Category {
   @Column('text')
   status: string;
 
-  @ManyToOne(() => User, (user) => user.userId)
+  @ManyToOne(() => User, (user) => user.categories)
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @OneToMany(() => Game, (game) => game.categoryId)
+  @OneToMany(() => Game, (game) => game.category)
+  @JoinColumn({ name: 'gameId', referencedColumnName: 'gameId' })
   games: Game[];
 }
