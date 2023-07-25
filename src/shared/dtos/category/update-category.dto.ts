@@ -12,14 +12,5 @@ export class UpdateCategoryDto {
   @ApiProperty()
   @AutoMap()
   categoryDesc?: string;
-
-  @ApiProperty()
-  @IsEnum(Statuses)
-  @AutoMap()
-  status: string;
-
-  @ApiProperty()
-  @IsString()
-  @AutoMap()
-  userId: string;
+  
 }

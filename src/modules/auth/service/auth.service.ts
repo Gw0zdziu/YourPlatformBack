@@ -63,14 +63,17 @@ export class AuthService {
       .where('user.username = :username', { username })
       .getOne();
     if (!user) {
-      throw new UnauthorizedException('Nie znaleziono użytkownika');
+      throw new HttpException(
+        'Nie znaleziono użytkownika',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const isPasswordMatch: boolean = await this.hashSvc.comparePassword(
       user?.password,
       password,
     );
     if (!isPasswordMatch) {
-      throw new UnauthorizedException('Brak dostępu');
+      throw new HttpException('Brak dostępu', HttpStatus.BAD_REQUEST);
     }
     const tokens = await this.getTokens(
       user.userId,

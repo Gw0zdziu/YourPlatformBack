@@ -19,11 +19,5 @@ export class CategoryDto {
   @IsString()
   @IsNotEmpty()
   @AutoMap()
-  status: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  @AutoMap()
   userId: string;
 }
