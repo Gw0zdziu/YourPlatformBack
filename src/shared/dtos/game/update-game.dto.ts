@@ -5,15 +5,7 @@ export class UpdateGameDto{
 
   @ApiProperty()
   @AutoMap()
-  gameId: string;
-
-  @ApiProperty()
-  @AutoMap()
-  categoryId: string;
-
-  @ApiProperty()
-  @AutoMap()
-  userId: string;
+  categoryId: string;g
 
   @ApiProperty()
   @AutoMap()

@@ -6,9 +6,9 @@ import {
   Headers,
   Param,
   Patch,
-  Post,
+  Post, Put,
   UseGuards
-} from "@nestjs/common";
+} from '@nestjs/common';
 import { GameService } from 'src/modules/game/service/game.service';
 import { GameDto } from 'src/shared/dtos/game/game.dto';
 import { GameDataDto } from 'src/shared/dtos/game/game-data.dto';
@@ -44,9 +44,9 @@ export class GameController {
 
   @ApiOperation({ summary: 'Update game' })
   @UseGuards(JwtAuthGuard)
-  @Patch()
-  async updateGame(@Body() updateGame: UpdateGameDto): Promise<void> {
-    await this.gameSvc.updateGame(updateGame);
+  @Put('update/:gameId')
+  async updateGame(@Param('gameId') gameId: string, @Body() updateGame: UpdateGameDto): Promise<void> {
+    await this.gameSvc.updateGame(gameId, updateGame);
   }
 
   @ApiOperation({ summary: 'Delete game' })

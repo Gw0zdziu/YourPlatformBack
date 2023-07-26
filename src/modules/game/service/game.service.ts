@@ -46,12 +46,12 @@ export class GameService {
       .execute();
   }
 
-  async updateGame(updateGame: UpdateGameDto): Promise<void> {
+  async updateGame(gameId: string, updateGame: UpdateGameDto): Promise<void> {
     const game = await this.dataSource
       .getRepository(Game)
       .createQueryBuilder('game')
       .select(['game.gameId', 'game.gameName'])
-      .where('game.gameId != :gameId', { gameId: updateGame.gameId })
+      .where('game.gameId != :gameId', { gameId })
       .andWhere('game.gameName = :gameName', { gameName: updateGame.gameName })
       .getExists();
     if (game) {
@@ -61,11 +61,12 @@ export class GameService {
       );
     }
     const gameMap = this.classMapper.map(updateGame, UpdateGameDto, Game);
+    gameMap.gameId = gameId;
     await this.dataSource
       .createQueryBuilder()
       .update(Game)
       .set(gameMap)
-      .where('gameId = :gameId', { gameId: updateGame.gameId })
+      .where('gameId = :gameId', { gameId })
       .execute();
   }
 

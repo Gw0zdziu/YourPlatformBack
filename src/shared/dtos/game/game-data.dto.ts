@@ -9,9 +9,6 @@ export class GameDataDto {
   categoryId: string;
 
   @AutoMap()
-  userId: string;
-
-  @AutoMap()
   gameName: string;
 
   @AutoMap()
