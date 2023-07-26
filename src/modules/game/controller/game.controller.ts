@@ -3,11 +3,12 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   Param,
   Patch,
   Post,
-  UseGuards,
-} from '@nestjs/common';
+  UseGuards
+} from "@nestjs/common";
 import { GameService } from 'src/modules/game/service/game.service';
 import { GameDto } from 'src/shared/dtos/game/game.dto';
 import { GameDataDto } from 'src/shared/dtos/game/game-data.dto';
@@ -22,7 +23,7 @@ export class GameController {
 
   @ApiOperation({ summary: 'Create new game' })
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @Post('add')
   async createGame(@Body() newGame: GameDto): Promise<void> {
     await this.gameSvc.createGame(newGame);
   }
@@ -53,5 +54,12 @@ export class GameController {
   @Delete(':gameId')
   async deleteGame(@Param('gameId') gameId: string): Promise<void> {
     await this.gameSvc.deleteGame(gameId);
+  }
+
+  @ApiOperation({ summary: 'Get user games'})
+  @UseGuards(JwtAuthGuard)
+  @Get('by/user')
+  async getGamesByUserId(@Headers('userId') userId: string){
+    return this.gameSvc.getGameByUserId(userId);
   }
 }

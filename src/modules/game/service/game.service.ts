@@ -8,6 +8,7 @@ import { Game } from 'src/shared/entities/game/game.entity';
 import { v4 as uuid } from 'uuid';
 import { GameDataDto } from 'src/shared/dtos/game/game-data.dto';
 import { UpdateGameDto } from 'src/shared/dtos/game/update-game.dto';
+import { GameListDto } from "src/shared/dtos/game/game-list.dto";
 
 @Injectable()
 export class GameService {
@@ -92,5 +93,22 @@ export class GameService {
       .from(Game)
       .where('gameId = :gameId', { gameId })
       .execute();
+  }
+
+  async getGameByUserId(userId: string){
+    const games = await this.dataSource
+      .getRepository(Game)
+      .createQueryBuilder('game')
+      .leftJoinAndSelect('game.category', 'category')
+      .select(['game', 'category.categoryName'])
+      .where('game.userId = :userId', { userId })
+      .getMany();
+
+    if (!games){
+      throw new HttpException(
+        'Użytkownika nie posiada żadnych kategorii',
+        HttpStatus.NOT_FOUND,)
+    }
+    return games;
   }
 }

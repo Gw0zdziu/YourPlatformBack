@@ -1,7 +1,23 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GameDto {
+export class GameListDto{
+  @ApiProperty()
+  @AutoMap()
+  gameId: string
+
+  @ApiProperty()
+  @AutoMap()
+  categoryName: string
+
+  @ApiProperty()
+  @AutoMap()
+  categoryId: string;
+
+  @ApiProperty()
+  @AutoMap()
+  userId: string;
+
   @ApiProperty()
   @AutoMap()
   gameName: string;
@@ -13,12 +29,4 @@ export class GameDto {
   @ApiProperty()
   @AutoMap()
   gameRating: number;
-
-  @ApiProperty()
-  @AutoMap()
-  categoryId: string;
-
-  @ApiProperty()
-  @AutoMap()
-  userId: string;
 }

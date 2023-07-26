@@ -53,6 +53,24 @@ export class CategoryService {
     return categories;
   }
 
+  async getCategoriesNames(userId: string): Promise<Category[]> {
+    const categories = await this.entities
+      .getRepository(Category)
+      .createQueryBuilder('category')
+      .select(['category.categoryId', 'category.categoryName'])
+      .where('category.userId = :userId', { userId })
+      .andWhere('category.status = :status', { status: Statuses.ACT })
+      .getMany();
+    if (!categories) {
+      throw new HttpException(
+        'Użytkownik nie posiada żadnych kategorii',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    console.log(categories)
+    return categories;
+  }
+
   async getCategoryById(categoryId: string): Promise<CategoryListDto> {
     const category = await this.isCategoryExist(categoryId, Statuses.ACT);
     if (!category) {

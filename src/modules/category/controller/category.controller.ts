@@ -36,6 +36,13 @@ export class CategoryController {
     return await this.categorySvc.getCategories();
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get categories names'})
+  @Get('categories-names')
+  async getCategoriesNames(@Headers('userId') userId){
+    return this.categorySvc.getCategoriesNames(userId)
+  }
+
   @ApiOperation({ summary: 'Get category by id' })
   @Get('/:categoryId')
   async getCategoryById(
