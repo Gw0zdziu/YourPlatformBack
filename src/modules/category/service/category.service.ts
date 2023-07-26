@@ -67,7 +67,6 @@ export class CategoryService {
         HttpStatus.NOT_FOUND,
       );
     }
-    console.log(categories)
     return categories;
   }
 
