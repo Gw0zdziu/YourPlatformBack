@@ -99,6 +99,7 @@ export class CategoryService {
       .where('category.categoryName = :categoryName', {
         categoryName,
       })
+      .andWhere('category.status = :status', { status: Statuses.ACT })
       .getExists();
     if (category) {
       throw new HttpException(
