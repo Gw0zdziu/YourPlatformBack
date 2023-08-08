@@ -1,9 +1,11 @@
 import {
   BadRequestException,
-  ForbiddenException, HttpException, HttpStatus,
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
   Injectable,
-  UnauthorizedException
-} from "@nestjs/common";
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
@@ -155,5 +157,21 @@ export class AuthService {
     );
     await this.updateRefreshToken(user.userId, tokens.refreshToken);
     return tokens;
+  }
+
+  async verifyToken(token: string): Promise<boolean> {
+    try {
+      const decodeToken = this.jwtSvc.verify(token, {secret: this.confSvc.get<string>('JWT_ACCESS_SECRET'),} );
+      const tokenExpired = decodeToken.exp <= Math.floor(Date.now() / 1000);
+      if (tokenExpired) {
+        throw new HttpException(
+          'Sesja użytkownika wygasła',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+      return true;
+    } catch (error) {
+      throw new HttpException('Błędny token', HttpStatus.UNAUTHORIZED);
+    }
   }
 }

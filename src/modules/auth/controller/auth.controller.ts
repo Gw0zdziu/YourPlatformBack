@@ -1,11 +1,19 @@
-import { Body, Controller, Get, Post, Req, UseGuards, Headers } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+  Headers,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { CreateUserDto } from 'src/shared/dtos/user/create-user.dto';
 import { SignInDto } from 'src/shared/dtos/auth/sign-in.dto';
-import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 import { RefreshTokenGuard } from 'src/shared/guards/refresh-token.guard';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { CurrentUser } from "src/shared/decorators/current-user/current-user.decorator";
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -37,5 +45,20 @@ export class AuthController {
     const userId = req.user.userId;
     const refreshToken = req.user.refreshToken;
     return this.authSvc.refreshTokens(userId, refreshToken);
+  }
+
+  @Get('check-token')
+  async checkToken(@Headers('authorization') header: string) {
+    if (!header || !header.startsWith('Bearer ')) {
+      throw new HttpException('Błędny token', HttpStatus.UNAUTHORIZED);
+    }
+    const token = header.split(' ')[1];
+
+    try {
+      const isValid = await this.authSvc.verifyToken(token);
+      return isValid;
+    } catch (error) {
+      throw new HttpException('Błędny token', HttpStatus.UNAUTHORIZED);
+    }
   }
 }
