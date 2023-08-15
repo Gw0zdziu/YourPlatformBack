@@ -54,7 +54,6 @@ export class AuthService {
       .execute();
     const tokens = await this.getTokens(user.userId, username, user.userEmail);
     await this.updateRefreshToken(user.userId, tokens.refreshToken);
-    await this.mailSvc.sendMailVerification(userEmail);
   }
 
   async signIn(signInData: SignInDto): Promise<object> {

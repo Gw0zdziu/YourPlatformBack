@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -10,10 +12,14 @@ import { UpdateUserDto } from 'src/shared/dtos/user/update-user.dto';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { UserDto } from 'src/shared/dtos/user/user.dto';
+import { UpdateUsernameDto } from 'src/shared/dtos/user/update-username.dto';
+import { UpdatePasswordDto } from 'src/shared/dtos/user/update-password.dto';
+import { HashService } from 'src/shared/helpers/hash/hash.service';
 
 @Injectable()
 export class UserService {
   constructor(
+    private hashSvc: HashService,
     @InjectDataSource() private entities: DataSource,
     @InjectMapper() private readonly classMapper: Mapper,
   ) {}
@@ -73,6 +79,68 @@ export class UserService {
       .createQueryBuilder()
       .update(User)
       .set(user)
+      .where('userId = :userId', { userId })
+      .execute();
+  }
+
+  async updateUsername(newUsername: UpdateUsernameDto): Promise<void> {
+    const { userId, username } = newUsername;
+    const isUserExist: boolean = await this.isUserIdExist(userId);
+    if (!isUserExist) {
+      throw new HttpException(
+        'Nie znaleziono użytkownika',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const isUserNameExist = await this.isUserNameExist(username);
+    if (isUserNameExist) {
+      throw new HttpException(
+        'Nazwa użytkownika jest zajęta',
+        HttpStatus.CONFLICT,
+      );
+    }
+    await this.entities
+      .createQueryBuilder()
+      .update(User)
+      .set({
+        username: username,
+      })
+      .where('userId = :userId', { userId })
+      .execute();
+  }
+
+  async updatePassword(updatePassword: UpdatePasswordDto): Promise<void> {
+    const { userId, oldPassword, newPassword } = updatePassword;
+    const isUserIdExist: boolean = await this.isUserIdExist(userId);
+    if (!isUserIdExist) {
+      throw new HttpException(
+        'Nie znaleziono użytkownika',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const userPassword = await this.entities
+      .createQueryBuilder()
+      .select('user.password')
+      .from(User, 'user')
+      .where('user.userId = :userId', { userId })
+      .getOne();
+    const arePasswordIdentical = this.hashSvc.comparePassword(
+      userPassword.password,
+      oldPassword,
+    );
+    if (!arePasswordIdentical) {
+      throw new HttpException(
+        'Stare hasło jest nie prawidłowe',
+        HttpStatus.CONFLICT,
+      );
+    }
+    const newHashedPassword = this.hashSvc.hashPassword(newPassword);
+    await this.entities
+      .createQueryBuilder()
+      .update(User)
+      .set({
+        password: newHashedPassword,
+      })
       .where('userId = :userId', { userId })
       .execute();
   }

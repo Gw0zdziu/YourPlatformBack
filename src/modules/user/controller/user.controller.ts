@@ -4,9 +4,9 @@ import {
   Delete,
   Get,
   HttpCode,
-  Param,
+  Param, Patch,
   Put,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { UserService } from 'src/modules/user/service/user.service';
 import { UpdateUserDto } from 'src/shared/dtos/user/update-user.dto';
@@ -14,6 +14,8 @@ import { UserDto } from 'src/shared/dtos/user/user.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/shared/decorators/current-user/current-user.decorator';
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
+import { UpdatePasswordDto } from 'src/shared/dtos/user/update-password.dto';
+import { UpdateUsernameDto } from 'src/shared/dtos/user/update-username.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -38,6 +40,18 @@ export class UserController {
   @HttpCode(204)
   async updateUser(@Body() updateUser: UpdateUserDto): Promise<void> {
     await this.userSvc.updateUser(updateUser);
+  }
+
+  @ApiOperation({ summary: 'Update password'})
+  @Patch('update-password')
+  async updatePassword(@Body() updatePassword: UpdatePasswordDto): Promise<void>{
+    await this.userSvc.updatePassword(updatePassword);
+  }
+
+  @ApiOperation({ summary: 'Update username'})
+  @Patch('update-username')
+  async updateUsername(@Body() updateUsername: UpdateUsernameDto): Promise<void>{
+    await this.userSvc.updateUsername(updateUsername);
   }
 
   @ApiOperation({ summary: 'Delete user' })

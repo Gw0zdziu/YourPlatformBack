@@ -5,6 +5,7 @@ import { CreateUserDto } from 'src/shared/dtos/user/create-user.dto';
 import { User } from 'src/shared/entities/user/user.entity';
 import { UpdateUserDto } from 'src/shared/dtos/user/update-user.dto';
 import { UserDto } from 'src/shared/dtos/user/user.dto';
+import { UpdatePasswordDto } from 'src/shared/dtos/user/update-password.dto';
 
 @Injectable()
 export class UserProfileService extends AutomapperProfile {
