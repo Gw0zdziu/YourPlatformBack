@@ -83,7 +83,9 @@ export class UserService {
       .execute();
   }
 
-  async updateUsername(newUsername: UpdateUsernameDto): Promise<void> {
+  async updateUsername(
+    newUsername: UpdateUsernameDto,
+  ): Promise<void> {
     const { userId, username } = newUsername;
     const isUserExist: boolean = await this.isUserIdExist(userId);
     if (!isUserExist) {
@@ -99,7 +101,7 @@ export class UserService {
         HttpStatus.CONFLICT,
       );
     }
-    await this.entities
+    this.entities
       .createQueryBuilder()
       .update(User)
       .set({
@@ -124,7 +126,7 @@ export class UserService {
       .from(User, 'user')
       .where('user.userId = :userId', { userId })
       .getOne();
-    const arePasswordIdentical = this.hashSvc.comparePassword(
+    const arePasswordIdentical = await this.hashSvc.comparePassword(
       userPassword.password,
       oldPassword,
     );
@@ -134,7 +136,8 @@ export class UserService {
         HttpStatus.CONFLICT,
       );
     }
-    const newHashedPassword = this.hashSvc.hashPassword(newPassword);
+    console.log(arePasswordIdentical);
+    const newHashedPassword = await this.hashSvc.hashPassword(newPassword);
     await this.entities
       .createQueryBuilder()
       .update(User)

@@ -16,6 +16,7 @@ import { CurrentUser } from 'src/shared/decorators/current-user/current-user.dec
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 import { UpdatePasswordDto } from 'src/shared/dtos/user/update-password.dto';
 import { UpdateUsernameDto } from 'src/shared/dtos/user/update-username.dto';
+import { User } from 'src/shared/entities/user/user.entity';
 
 @ApiTags('User')
 @Controller('user')
@@ -43,15 +44,15 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Update password'})
-  @Patch('update-password')
+  @Put('update-password')
   async updatePassword(@Body() updatePassword: UpdatePasswordDto): Promise<void>{
     await this.userSvc.updatePassword(updatePassword);
   }
 
   @ApiOperation({ summary: 'Update username'})
-  @Patch('update-username')
+  @Put('update-username')
   async updateUsername(@Body() updateUsername: UpdateUsernameDto): Promise<void>{
-    await this.userSvc.updateUsername(updateUsername);
+    return await this.userSvc.updateUsername(updateUsername);
   }
 
   @ApiOperation({ summary: 'Delete user' })
