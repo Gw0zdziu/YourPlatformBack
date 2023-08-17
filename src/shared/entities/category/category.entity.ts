@@ -6,23 +6,23 @@ import { Game } from 'src/shared/entities/game/game.entity';
 @Entity()
 export class Category {
   @AutoMap()
-  @PrimaryColumn('text')
+  @PrimaryColumn('varchar',{length: 450, nullable: false})
   categoryId: string;
 
   @AutoMap()
-  @Column('text')
+  @Column('varchar',{length: 450, nullable: false})
   categoryName: string;
 
   @AutoMap()
-  @Column('text')
+  @Column('varchar',{length: 450, nullable: true})
   categoryDesc: string;
 
   @AutoMap()
-  @Column('text')
+  @Column('varchar',{length: 450, nullable: false})
   userId: string;
 
   @AutoMap()
-  @Column('text')
+  @Column('varchar',{length: 10, nullable: false})
   status: string;
 
   @ManyToOne(() => User, (user) => user.categories)

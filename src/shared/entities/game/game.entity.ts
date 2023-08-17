@@ -6,27 +6,27 @@ import { Category } from 'src/shared/entities/category/category.entity';
 @Entity()
 export class Game {
   @AutoMap()
-  @PrimaryColumn('text')
+  @PrimaryColumn('varchar',{length: 450, nullable: false})
   gameId: string;
 
   @AutoMap()
-  @Column('text')
+  @Column('varchar',{length: 450, nullable: false})
   categoryId: string;
 
   @AutoMap()
-  @Column('text')
+  @Column('varchar',{length: 450, nullable: false})
   userId: string;
 
   @AutoMap()
-  @Column('text')
+  @Column('varchar', { length: 450, nullable: false })
   gameName: string;
 
   @AutoMap()
-  @Column('text')
+  @Column('varchar', { length: 450, nullable: true })
   gameDesc: string;
 
   @AutoMap()
-  @Column('decimal')
+  @Column('int', { nullable: true })
   gameRating: number;
 
   @ManyToOne(() => User, (user: User) => user.games)

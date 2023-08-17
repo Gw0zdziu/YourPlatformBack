@@ -6,19 +6,19 @@ import { Game } from 'src/shared/entities/game/game.entity';
 @Entity()
 export class User {
   @AutoMap()
-  @PrimaryColumn('text')
+  @PrimaryColumn('varchar',{length: 450, nullable: false})
   userId: string;
 
   @AutoMap()
-  @Column('text')
+  @Column('varchar',{length: 450, nullable: false})
   userEmail: string;
 
   @AutoMap()
-  @Column('text')
+  @Column('varchar',{length: 450, nullable: false})
   username: string;
 
   @AutoMap()
-  @Column('text')
+  @Column('varchar',{length: 450, nullable: false})
   password: string;
 
   @Column('text', { nullable: true })
