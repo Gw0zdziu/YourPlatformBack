@@ -36,7 +36,6 @@ import { EmailConfirmationModule } from 'src/modules/email-confirmation/email-co
         database: config.get('DB_NAME'),
         entities: [User, Category, Game],
         autoLoadEntities: true,
-        synchronize: true,
       }),
       inject: [ConfigService],
     }),
