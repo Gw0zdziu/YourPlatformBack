@@ -1,5 +1,4 @@
-<p style="font-size: 32px; font-weight: bold;text-align: center">YourPlatformBack</p>
-
+<p align="center">YourPlatformBack</p>
 
 
 ## Description
