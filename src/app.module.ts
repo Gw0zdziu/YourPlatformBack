@@ -22,9 +22,7 @@ import { EmailConfirmationModule } from 'src/modules/email-confirmation/email-co
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: ['./src/environments/.env.dev', '.env.prod'],
-    }),
+    ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => ({
