@@ -47,7 +47,7 @@ export class CategoryController {
   @Get('/:categoryId')
   async getCategoryById(
     @Param('categoryId') categoryId: string,
-  ): Promise<CategoryListDto> {
+  ): Promise<Category> {
     return this.categorySvc.getCategoryById(categoryId);
   }
 

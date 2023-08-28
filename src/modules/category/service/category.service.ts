@@ -70,15 +70,23 @@ export class CategoryService {
     return categories;
   }
 
-  async getCategoryById(categoryId: string): Promise<CategoryListDto> {
-    const category = await this.isCategoryExist(categoryId, Statuses.ACT);
+  async getCategoryById(categoryId: string): Promise<Category> {
+    const category = await this.entities
+      .getRepository(Category)
+      .createQueryBuilder('category')
+      .leftJoin('category.games', 'game')
+      .loadRelationCountAndMap('category.gameCount', 'category.games')
+      .where('category.categoryId = :categoryId', { categoryId })
+      .andWhere('category.status = :status', { status: Statuses.ACT })
+      .getOne();
     if (!category) {
       throw new HttpException(
         'Taka kategoria nie istnieje',
         HttpStatus.NOT_FOUND,
       );
     }
-    return this.classMapper.map(category, Category, CategoryListDto);
+
+    return category;
   }
   async createNewCategory(newCategory: CategoryDto): Promise<void> {
     const { categoryName, userId } = newCategory;
