@@ -4,7 +4,6 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
@@ -18,7 +17,6 @@ import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from 'src/shared/dtos/user/create-user.dto';
 import { v4 as uuid } from 'uuid';
 import { UserService } from 'src/modules/user/service/user.service';
-import { MailHelperService } from 'src/shared/helpers/mail/mail-helper.service';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +27,6 @@ export class AuthService {
     private jwtSvc: JwtService,
     private confSvc: ConfigService,
     private userSvc: UserService,
-    private mailSvc: MailHelperService,
   ) {}
 
   async signUp(newUser: CreateUserDto) {

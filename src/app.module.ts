@@ -18,7 +18,6 @@ import { Game } from 'src/shared/entities/game/game.entity';
 import { GameModule } from 'src/modules/game/game.module';
 import { GameProfileService } from 'src/shared/profiles/game/game-profile.service';
 import { JwtModule } from '@nestjs/jwt';
-import { EmailConfirmationModule } from 'src/modules/email-confirmation/email-confirmation.module';
 
 @Module({
   imports: [
@@ -46,7 +45,6 @@ import { EmailConfirmationModule } from 'src/modules/email-confirmation/email-co
     UserModule,
     CategoryModule,
     GameModule,
-    EmailConfirmationModule,
   ],
   controllers: [],
   providers: [
